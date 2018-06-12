@@ -65,3 +65,151 @@ Nó sẽ in ra màn hình như dưới đây, mã thập phân 'codediesel' :
 
  |
  
+ Trong các ví dụ ở trên tham số thứ nhất là chuỗi định dạng và tham số thứ 2 là dữ liệu thực. Chuỗi định dạng chỉ định rằng làm cách nào để tham số dữ liệu được đưa ra. Trong ví dụ này phần đầu tiên của định dạng 'C', chỉ định rằng chúng ta nên sửa chữ đầu tiên của dữ liệu như 1 kiểu byte nguyên. Phân tiếp theo '*', cho các function áp dụng các định dạng đã được chỉ định từ trước với tất cả các kí tự còn lại
+ 
+ Mặc dù điều này có vẻ như bị từ chối, ở phần tiếp theo sẽ cung cấp các ví dụ cụ thể hơn.
+ 
+ #### Nắm giữ dữ liệu header
+ 
+ Dưới đây là giải pháp cho vấn để sử dụng function unpack() cho GIF. Function _is_gif()_ sẽ trả về dữ liệu đúng nếu file được đưa vào là định dạng GIF.
+
+| ----- |
+| 
+    
+    
+    function is_gif($image_file)
+    {
+     
+        /* Open the image file in binary mode */
+        if(!$fp = fopen ($image_file, 'rb')) return 0;
+     
+        /* Read 20 bytes from the top of the file */
+        if(!$data = fread ($fp, 20)) return 0;
+     
+        /* Create a format specifier */
+        $header_format = 'A6version';  # Get the first 6 bytes
+    
+        /* Unpack the header data */
+        $header = unpack ($header_format, $data);
+     
+        $ver = $header['version'];
+     
+        return ($ver == 'GIF87a' || $ver == 'GIF89a')? true : false;
+     
+    }
+     
+    /* Run our example */
+    echo is_gif("aboutus.gif");
+
+ |
+ 
+ Dòng quan trọng để ghi chú là chỉ định định dạng. Kí tự 'A6' chỉ định rằng function unpack() lấy 6 byte đầu của dữ liệu và diễn tả nó như 1 chuỗi. Dữ lệu nhận được sau đó được lưu trữ trong một mảng liên quan với tên key là 'version'.
+ 
+ Một ví dụ khác được đưa ra dưới đây. Nó trả về một số dữ liệu header thêm vào của file GIF, bao gồm chiều rộng và chiều cao ảnh.
+ 
+ | ----- |
+ | 
+     
+     
+     function get_gif_header($image_file)
+     {
+      
+         /* Open the image file in binary mode */
+         if(!$fp = fopen ($image_file, 'rb')) return 0;
+      
+         /* Read 20 bytes from the top of the file */
+         if(!$data = fread ($fp, 20)) return 0;
+      
+         /* Create a format specifier */
+         $header_format = 
+                 'A6Version/' . # Get the first 6 bytes
+                 'C2Width/' .   # Get the next 2 bytes
+                 'C2Height/' .  # Get the next 2 bytes
+                 'C1Flag/' .    # Get the next 1 byte
+                 '@11/' .       # Jump to the 12th byte
+                 'C1Aspect';    # Get the next 1 byte
+     
+         /* Unpack the header data */
+         $header = unpack ($header_format, $data);
+      
+         $ver = $header['Version'];
+      
+         if($ver == 'GIF87a' || $ver == 'GIF89a') {
+             return $header;
+         } else {
+             return 0;
+         }
+     }
+      
+     /* Run our example */
+     print_r(get_gif_header("aboutus.gif"));
+ 
+  | 
+  
+  Ví dụ trên sẽ in ra như dưới đây khi chạy
+  
+  | ----- |
+  | 
+      
+      
+      Array
+      (
+          [Version] => GIF89a
+          [Width1] => 97
+          [Width2] => 0
+          [Height1] => 33
+          [Height2] => 0
+          [Flag] => 247
+          [Aspect] => 0
+      )
+  
+   | 
+  
+  Dưới đây chúng ta sẽ đi vào chi tiết của một định dạng cụ thể hơn khi chạy. Tôi sẽ chia định dạng, đưa những chi tiết vào trong mỗi kí tự.
+  
+  | ----- |
+  | 
+      
+      
+      $header_format = 'A6Version/C2Width/C2Height/C1Flag/@11/C1Aspect';
+  
+   | 
+  
+  | ----- |
+  | 
+      
+      
+      A - Read a byte and interpret it as a string. 
+          Number of bytes to read is given next
+      6 - Read a total of 6 bytes, starting from position 0
+      Version - Name of key in the associative array where data 
+          retrieved by 'A6' is stored
+       
+      / - Start a new code format
+      C - Interpret the next data as an unsigned byte
+      2 - Read a total of 2 bytes
+      Width - Key in the associative array
+       
+      / - Start a new code format
+      C - Interpret the data as an unsigned byte
+      2 - Read a total of 2 bytes
+      Height- Key in the associative array
+       
+      / - Start a new code format
+      C - Interpret the data as an unsigned byte
+      1 - Read a total of 2 bytes
+      Flag - Key in the associative array
+       
+      / - Start a new code format
+      @ - Move to the byte offset specified by the following number.
+            Remember that the first position in the binary string is 0. 
+      11 - Move to position 11
+       
+      / - Start a new code format
+      C - Interpret the data as an unsigned byte
+      1 - Read a total of 1 bytes
+      Aspect - Key in the associative array
+  
+   | 
+
+Xem thêm các tùy chọn định dạng tại đây [here][4]. Trên đây tôi chỉ trình bày một ví dụ nhỏ, pack/unpack trong thực tế còn có thể làm những việc phức tạp hơn những thứ đã được viết ở trên.
