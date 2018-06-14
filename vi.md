@@ -1,6 +1,6 @@
 # Giải nén dữ liệu nhị phân trong PHP
 
-Làm việc với các file nhị phân trong PetaHP hiếm khi được yêu cầu. Tuy nhiên khi cần thiết các function 'pack' và 'unpack' của PHP có thể hỗ trợ bạn rất nhiều. Để thiết lập bước này chúng ta sẽ bắt đầu với một vấn đề về lập trình, điều này sẽ giữ cho bài viết được nhất quán liền mạch về ngữ cảnh của bài viết. Vấn đề đó là: Chúng ta muốn viết một function đầu vào là một file ảnh và nó sẽ cho chúng ta biết liệu rằng file đó có phải là ảnh GIF hay không; không liên quan với bất kỳ phần mở rộng nào mà f có thể cóile. Chúng ta không được sử dụng bất kì function nào của thư viện GD.
+Yêu cầu Làm việc với các file nhị phân trong PHP khá hiếm. Tuy nhiên khi cần thiết các function 'pack' và 'unpack' của PHP có thể hỗ trợ bạn rất nhiều. Để thiết lập bước này chúng ta sẽ bắt đầu với một vấn đề về lập trình, điều này sẽ giữ cho bài viết được nhất quán liền mạch về ngữ cảnh của bài viết. Vấn đề đó là: Chúng ta muốn viết một function đầu vào là một file ảnh và nó sẽ cho chúng ta biết liệu rằng file đó có phải là ảnh GIF hay không; không liên quan với bất kỳ phần mở rộng nào mà file có thể có. Chúng ta không được sử dụng bất kì function nào của thư viện GD.
 
 ### Một header của file GIF
 
