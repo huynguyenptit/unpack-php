@@ -1,10 +1,10 @@
 # Giải nén dữ liệu nhị phân trong PHP
 
-Làm việc với các file nhị phân trong PetaHP hiếm khi được yêu cầu. Tuy nhiên khi cần thiết các function 'pack' và 'unpack' của PHP có thể hỗ trợ bạn rất nhiều. Để thiết lập bước này chúng ta sẽ bắt đầu với một vấn đề về lập trình, điều này sẽ giữ cho bài viết được nhất quán liền mạch về ngữ cảnh của bài viết. Vấn đề đó là: Chúng ta muốn viết một function đầu vào là một file ảnh và nó sẽ cho chúng ta biết liệu rằng file đó có phải là ảnh GIF hay không; không liên quan với bất kỳ phần mở rộng nào mà f có thể cóile. Chúng ta không được sử dụng bất kì function nào của thư viện GD.
+Làm việc với các file nhị phân trong PHP hiếm khi được yêu cầu. Tuy nhiên khi cần thiết các hàm 'pack' và 'unpack' của PHP có thể hỗ trợ bạn rất nhiều. Để thiết lập bước này chúng ta sẽ bắt đầu với một vấn đề về lập trình, điều này sẽ giữ cho bài viết được nhất quán liền mạch về ngữ cảnh của bài viết. Vấn đề đó là: Chúng ta muốn viết một hàm đầu vào là một file ảnh và nó sẽ cho chúng ta biết liệu rằng file đó có phải là ảnh GIF hay không; không liên quan với bất kỳ phần mở rộng nào mà file có thể có. Chúng ta không được sử dụng bất kì function nào của thư viện GD.
 
 ### Một header của file GIF
 
-Với yêu cầu rằng không được sử dụng bất kì function nào trong thư viện đồ họa, để giải quyết vấn đề này ta cần lấy những dữ liệu liên quan từ file GIF. Không giống như HTML hay XML hoặc các loại file text khác, một file GIF và hầy hết các định dạng ảnh khác đều được lưu trữ dữ dạng nhị phân. Hầu hết các file nhị phân chứa header ở trên đầu file cung cấp các thông tin meta về file cụ thể. Chúng ta có thể sử dụng những thông tin này để tìm ra loại file và các thứ khác, ví dụ nhưng chiều cao, chiều rộng trong trường hợp của file GIF. Một header của file GIF tiêu biểu được trình bày ở duwois đây, sử dụng bộ sửa hex như [WinHex][1].
+Với yêu cầu rằng không được sử dụng bất kì function nào trong thư viện đồ họa, để giải quyết vấn đề này ta cần lấy những dữ liệu liên quan từ file GIF. Không giống như HTML hay XML hoặc các loại file text khác, một file GIF và hầy hết các định dạng ảnh khác đều được lưu trữ dữ dạng nhị phân. Hầu hết các file nhị phân chứa header ở trên đầu file cung cấp các thông tin meta về file cụ thể. Chúng ta có thể sử dụng những thông tin này để tìm ra loại file và các thứ khác, giống như chiều cao, chiều rộng trong một file GIF. Một header của file GIF tiêu biểu được trình bày ở duwois đây, sử dụng bộ sửa hex như [WinHex][1].
 ![][2]
 
 Mô tả chi tiết về header được đưa ra ở dưới đây.
@@ -30,11 +30,11 @@ Mô tả chi tiết về header được đưa ra ở dưới đây.
 
  | 
  
-Do đó để kiểm tra liệu rằng một file ảnh có phải là ảnh GIF hay không, chúng ta cần phải kiểm tra 3 byte bắt đầu của header, nơi có các dấu hiệu của 'GIF', và 3 byte tiếp theo chưa các phiên bản; hoặc '87a' hoặc '89a'. Đó là cho các tác vụ như trên cái mà chứa function unpack (). Trước khi chúng ta xem xét giải pháp, xem nhanh hàm unpack ().
+Do đó để kiểm tra liệu rằng một file ảnh có phải là ảnh GIF hay không, chúng ta cần phải kiểm tra 3 byte bắt đầu của header, nơi có các dấu hiệu của 'GIF', và 3 byte tiếp theo chưa các phiên bản; hoặc '87a' hoặc '89a'. Đó là các tác vụ như trên mà  function unpack () không thể thiếu. Trước khi chúng ta xem xét giải pháp, xem nhanh hàm unpack ().
 
 ### Sử dụng function unpack()
 
-[unpack()][3] là sự hoàn thiện của [pack()][4] - nó vận chuyển dữ liệu nhị phân đến với mảng liên kết dựa trên định dạng đã được chỉ định. Nó là một thứ gì đó xuyên suốt ở các dòng _sprintf_, vận chuyển các chuỗi dữ liệu theo nhưng định đạng cho trước. 2 function này cho phép chúng ta đọc và ghi các buffer của dữ liệu nhị phân theo như định dạng đã chỉ định. Điều này dễ dàng cho phép một lập trình viên chuyển đổi dữ liệu với chương trình đã được viết ở một ngôn ngữ khách hoặc định dạng khác. Một ví dụ nhỏ cho việc này.
+[unpack()][3] là sự bổ sung của [pack()][4] - nó chuyển đổi dữ liệu nhị phân đến với mảng liên kết dựa trên định dạng đã được chỉ định. Điều này giống với hàm _sprintf_, chuyển đổi các chuỗi dữ liệu theo nhưng định đạng cho trước. 2 function này cho phép chúng ta đọc và ghi các buffer của dữ liệu nhị phân theo như định dạng đã chỉ định. Điều này dễ dàng cho phép một lập trình viên chuyển đổi dữ liệu với chương trình đã được viết ở một ngôn ngữ khách hoặc định dạng khác. Một ví dụ nhỏ cho việc này.
 
 | ----- |
 | 
@@ -67,9 +67,9 @@ Nó sẽ in ra màn hình như dưới đây, mã thập phân 'codediesel' :
  
  Trong các ví dụ ở trên tham số thứ nhất là chuỗi định dạng và tham số thứ 2 là dữ liệu thực. Chuỗi định dạng chỉ định rằng làm cách nào để tham số dữ liệu được đưa ra. Trong ví dụ này phần đầu tiên của định dạng 'C', chỉ định rằng chúng ta nên sửa chữ đầu tiên của dữ liệu như 1 kiểu byte nguyên. Phân tiếp theo '*', cho các function áp dụng các định dạng đã được chỉ định từ trước với tất cả các kí tự còn lại
  
- Mặc dù điều này có vẻ như bị từ chối, ở phần tiếp theo sẽ cung cấp các ví dụ cụ thể hơn.
+ Mặc dù điều này có vẻ khó hiểu, ở phần tiếp theo sẽ cung cấp các ví dụ cụ thể hơn.
  
- #### Nắm giữ dữ liệu header
+ #### Lấy dữ liệu header
  
  Dưới đây là giải pháp cho vấn để sử dụng function unpack() cho GIF. Function _is_gif()_ sẽ trả về dữ liệu đúng nếu file được đưa vào là định dạng GIF.
 
@@ -103,7 +103,7 @@ Nó sẽ in ra màn hình như dưới đây, mã thập phân 'codediesel' :
 
  |
  
- Dòng quan trọng để ghi chú là chỉ định định dạng. Kí tự 'A6' chỉ định rằng function unpack() lấy 6 byte đầu của dữ liệu và diễn tả nó như 1 chuỗi. Dữ lệu nhận được sau đó được lưu trữ trong một mảng liên quan với tên key là 'version'.
+ Dòng code quan trọng cần chú ý là phần khai báo định dạng. Kí tự 'A6' chỉ định rằng function unpack() lấy 6 byte đầu của dữ liệu và diễn tả nó như 1 chuỗi. Dữ lệu nhận được sau đó được lưu trữ trong một mảng liên quan với tên key là 'version'.
  
  Một ví dụ khác được đưa ra dưới đây. Nó trả về một số dữ liệu header thêm vào của file GIF, bao gồm chiều rộng và chiều cao ảnh.
  
